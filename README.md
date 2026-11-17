@@ -7,7 +7,6 @@ This is the code: the two networks, the geometry between them, training, Core ML
 - **The model:** [gregology/sheet-music-scanner](https://huggingface.co/gregology/sheet-music-scanner)
 - **How each run went:** [TRAINING.md](TRAINING.md)
 - **The test set:** [gregology/sheet-music-scanner-eval](https://huggingface.co/datasets/gregology/sheet-music-scanner-eval)
-- **The demo:** [gregology/sheet-music-scanner](https://huggingface.co/spaces/gregology/sheet-music-scanner)
 - **The training data generator:** [sheet-music-scanner-synthetic](https://github.com/gregology/sheet-music-scanner-synthetic)
 
 Version 1.0 gets 0.94% of notes wrong on my 81 iPhone photos of real music, and 0.37% after a check that each measure adds up. It never trained on a real photo.
