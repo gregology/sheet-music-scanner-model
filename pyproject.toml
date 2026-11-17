@@ -1,0 +1,30 @@
+[project]
+name = "sheet-model"
+version = "0.1.0"
+description = "Reads a phone photo of sheet music into a score, small enough to run on an iPhone"
+requires-python = "==3.12.*"
+license = "MIT"
+authors = [{ name = "Greg Clarke" }]
+dependencies = [
+    "huggingface-hub>=0.26",
+    "numpy>=2.0",
+    "opencv-python-headless>=4.10",
+    "rapidfuzz>=3.10",
+    "safetensors>=0.4",
+    "torch>=2.6",
+]
+
+[dependency-groups]
+dev = ["coremltools>=9.0", "music21==9.9.1", "pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sheet_model"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# coremltools calls its own deprecated registry while converting: its warning, not ours.
+filterwarnings = ["ignore:Function _TORCH_OPS_REGISTRY:DeprecationWarning"]
