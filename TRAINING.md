@@ -147,6 +147,8 @@ Each reader wins some rows, and every gap is within what two runs of one setup h
 
 The reader converts as it is: no loop, fixed shapes, `torch.export` then coremltools to an iOS 18 program. On an Intel Mac, 119 lines from my first 12 pages read to the same tokens as PyTorch, with probabilities within 0.044. At 16 bits the reader read all zeros in the iOS simulator on that Mac, so the app ships it at 32 bits, 24 MB. The finder is fine at 16 bits, 3 MB. The app's Swift reading of a synthetic page matches PyTorch's tokens on all 7 lines and puts every staff point within a tenth of a staff space.
 
+Version 1.0's Core ML reader, as published here, read 26 lines from three of my photos on an M2 MacBook Air (2026-11-18) to the same token as PyTorch at every step, at a median of 7 ms a line. That's a Mac's chip, not a phone's.
+
 ## Not measured
 
 - Time on an iPhone. On the Intel Mac's CPU a line took 198 ms, but that Mac has no Neural Engine.
