@@ -9,7 +9,7 @@ This is the code: the two networks, the geometry between them, training, Core ML
 - **The test set:** [gregology/sheet-music-scanner-eval](https://huggingface.co/datasets/gregology/sheet-music-scanner-eval)
 - **The training data generator:** [sheet-music-scanner-synthetic](https://github.com/gregology/sheet-music-scanner-synthetic)
 
-Version 1.0 gets 0.94% of notes wrong on my 81 iPhone photos of real music, and 0.37% after a check that each measure adds up. It never trained on a real photo.
+Version 1.0 gets 1.10% of notes wrong on my 81 iPhone photos of real music, and 0.21% after a check that each measure adds up. It never trained on a real photo.
 
 ## Use it
 
@@ -65,7 +65,7 @@ The reader writes where a note sits, not its pitch: `note-S3_4` is a quarter not
 
 Checked on 48,419 training lines, 48,385 come back from positions to the generator's pitches exactly. The other 34 are grace notes, where the generator and a musician disagree about whether an accidental carries.
 
-The vocabulary grows with the data, since a note's token names its place and length together. Version 1.0 has 1,330 tokens.
+The vocabulary grows with the data, since a note's token names its place and length together. Version 1.0 has 1,275 tokens.
 
 ### The measure check
 
@@ -83,7 +83,7 @@ uv run python -m sheet_model.train data/lines-v0 runs/reader --also data/lines-v
 
 `prepare` cuts every line out of every photo along the truth's staff lines, nudged a little since a real finder won't be exact. About five lines and 150 kB a page.
 
-`train` holds back one example in fifty and, after each epoch, measures the share of tokens wrong on those lines; `best.pt` is the best epoch by that measure. It varies each line as it's loaded: moved, grown, tilted, three in four bent, the staff space stretched along the line, blurred, lightened or darkened. AdamW at 3e-4 with weight decay 0.01, 1,000 steps of warm-up then cosine, bf16 autocast, batch 48. A line longer than 96 tokens is left out, since CTC can't spell more in 200 steps. A run that stops carries on from `last.pt`. Version 1.0's reader took 30 epochs of 7.6 minutes on an RTX 4090.
+`train` holds back one example in fifty and, after each epoch, measures the share of tokens wrong on those lines; `best.pt` is the best epoch by that measure. It varies each line as it's loaded: moved, grown, tilted, three in four bent, the staff space stretched along the line, blurred, lightened or darkened. AdamW at 3e-4 with weight decay 0.01, 1,000 steps of warm-up then cosine, bf16 autocast, batch 48. A line longer than 96 tokens is left out, since CTC can't spell more in 200 steps. A run that stops carries on from `last.pt`. Version 1.0's reader took 30 epochs of 7.3 minutes on an RTX 4090.
 
 The finder trains on the photos' staff lines:
 
@@ -114,7 +114,7 @@ uv run python tools/measure_rule.py reads.json --survey <folder>
 ## Core ML
 
 ```sh
-uv run python tools/publish.py runs/reader runs/finder <out> --datasets v0 v1 v2 v3-tremolo --core-ml
+uv run python tools/publish.py runs/reader runs/finder <out> --datasets v0 v1 v2-clean v3-tremolo-clean --core-ml
 ```
 
 writes the weights as safetensors, `config.json`, the vocabulary, and `coreml/Reader.mlpackage` and `coreml/Finder.mlpackage` for iOS 18. The conversion is `torch.export` then coremltools, with PyTorch's fused attention turned off so every op is one Core ML knows. The reader goes out at 32 bits, because at 16 it read all zeros in the iOS simulator on an Intel Mac; the finder is fine at 16. [`export.py`](src/sheet_model/export.py) has a check that runs the converted reader on a Mac and compares its tokens with PyTorch's.

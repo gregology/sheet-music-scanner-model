@@ -10,6 +10,7 @@ Notes from 11 to 17 November 2026, run by run. Each round went the same way: rea
 | r52k-real | 11-16 | + v2 | Real scores as the music | 1.59% | 3.79% | 2.86% |
 | r56k-gaps | 11-17 | + v3, both halves | Pages asked for by name | 2.19% | 3.48% | 3.34% |
 | r54k-tremolo | 11-17 | + v3-tremolo only | The triplet pages dropped | 0.94% | 3.26% | 2.92% |
+| r51k-clean | 11-17 | The same, no flagged pages | PDMX's licence-flagged pages left out | 1.13% | 3.32% | 2.88% |
 
 Share of all notes wrong, every reader through the finder f30k, before the measure check. Real-music photos: my 81 photos, 13,127 notes. Survey: 434 pages, 70,278 notes. t1: 2,000 synthetic photos, 398,148 notes. The run names count the thousands of training photos.
 
@@ -121,13 +122,26 @@ r56k-gaps, on all of it, read tremolos far better (764 wrong to 477) and unmarke
 
 The triplet pages taught it to guess. An unmarked triplet looks on its line exactly like three plain eighths, so 2,000 pages of them taught the reader that three beamed eighths might be a triplet. On the survey, plain notes read as triplets went from 96 to 342. On my photos, one cello page went from 1 mistake to 68 and a violin page from 22 to 61, every one a plain eighth read as a triplet. And unmarked triplets themselves barely moved: 942 wrong of 1,078, from 1,018.
 
-r54k-tremolo is the same run without the triplet pages. It kept the tremolo gains (498 wrong of 922) and stopped guessing (56 plain notes read as triplets). Unmarked triplets are back where they were, 1,035 of 1,078, and are left to the measure check, which only has to decide whether a measure adds up. With the check, r54k-tremolo reads my real-music photos at 0.37% and the survey at 2.10%. It's the reader in the app from version 0.10, and version 1.0 here.
+r54k-tremolo is the same run without the triplet pages. It kept the tremolo gains (498 wrong of 922) and stopped guessing (56 plain notes read as triplets). Unmarked triplets are back where they were, 1,035 of 1,078, and are left to the measure check, which only has to decide whether a measure adds up. With the check, r54k-tremolo reads my real-music photos at 0.37% and the survey at 2.10%. It's the reader in the app from version 0.10.
 
 ## Without the flagged scores
 
 PDMX's makers flagged scores whose licence on musescore.com disagrees with the one in the file. My generator leaves them out by default; v2 and v3-tremolo were made with them in. 2,797 of those two datasets' 13,998 pages came from flagged scores: 2,222 of v2's and 575 of v3-tremolo's, or 16,451 of 282,716 lines (5.8%).
 
-r51k-clean is r54k-tremolo's data and settings without those pages. Results to come.
+r51k-clean is r54k-tremolo's data and settings without those pages: 51,198 photos, 30 epochs, trained on 2026-11-17. Both readers were scored the same evening from their published files, with the test set's `evaluate.py`, on the RTX 4090, through the finder f30k:
+
+| Test set | r54k-tremolo | r51k-clean |
+|---|---|---|
+| My photos of real music, 81 | 0.92% | 1.10% |
+| The same, after the measure check | 0.36% | 0.21% |
+| My photos of made-up sheets, 33 | 0.88% | 0.53% |
+| The survey, 434 pages | 3.26% | 3.32% |
+| The same, after the measure check | 2.12% | 2.17% |
+| t1, 2,000 photos | 2.97% | 2.86% |
+| t1, well taken, 273 | 0.23% | 0.20% |
+| Survey tremolos read wrong, of 922, from `read_pages.py`'s reading | 498 | 469 |
+
+Each reader wins some rows, and every gap is within what two runs of one setup have differed by before. The flagged pages were worth nothing I can measure, not even to tremolos, though they were 29% of the tremolo pages. So version 1.0 here is r51k-clean.
 
 ## Core ML
 
